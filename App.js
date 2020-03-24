@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, FlatList } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  Alert,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native';
 
 import Header from './components/header';
 import TodoItem from './components/todoItem';
@@ -17,27 +24,40 @@ const App = () => {
   };
 
   const submitHandler = text => {
-    setTodos(prevTodos => [
-      { text, key: Math.random().toString() },
-      ...prevTodos,
-    ]);
+    if (text.length > 3) {
+      setTodos(prevTodos => [
+        { text, key: Math.random().toString() },
+        ...prevTodos,
+      ]);
+    } else {
+      // title, message, buttons
+      Alert.alert('OOP!', 'todos must be over 3 characters long', [
+        { text: 'Understood', onPress: () => console.log('alert closed') },
+      ]);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Header />
-      <View style={styles.content}>
-        <AddTodo submitHandler={submitHandler} />
-        <View style={styles.list}>
-          <FlatList
-            data={todos}
-            renderItem={({ item }) => (
-              <TodoItem item={item} pressHandler={pressHandler} />
-            )}
-          />
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+        console.log('dismissed keyboard');
+      }}>
+      <View style={styles.container}>
+        <Header />
+        <View style={styles.content}>
+          <AddTodo submitHandler={submitHandler} />
+          <View style={styles.list}>
+            <FlatList
+              data={todos}
+              renderItem={({ item }) => (
+                <TodoItem item={item} pressHandler={pressHandler} />
+              )}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
